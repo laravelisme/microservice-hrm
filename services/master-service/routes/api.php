@@ -21,3 +21,11 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
         Route::delete('/{id}', [\App\Http\Controllers\Company\CompanyController::class, 'destroy']);
     });
 });
+
+Route::fallback(function () {
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Endpoint tidak ditemukan',
+        'code' => 404,
+    ], 404);
+});
