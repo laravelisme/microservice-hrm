@@ -20,6 +20,16 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
         Route::put('/{id}', [\App\Http\Controllers\Company\CompanyController::class, 'update']);
         Route::delete('/{id}', [\App\Http\Controllers\Company\CompanyController::class, 'destroy']);
     });
+
+    Route::prefix('department')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Department\DepartmentController::class, 'index']);
+        Route::get('/options', [\App\Http\Controllers\Department\DepartmentController::class, 'companyOptions']);
+        Route::post('/', [\App\Http\Controllers\Department\DepartmentController::class, 'store']);
+        Route::get('/{id}', [\App\Http\Controllers\Department\DepartmentController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\Department\DepartmentController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\Department\DepartmentController::class, 'destroy']);
+    });
+
 });
 
 Route::fallback(function () {
