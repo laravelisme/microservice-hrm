@@ -38,6 +38,15 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
         Route::delete('/{id}', [\App\Http\Controllers\LokasiKerja\LokasiKerjaController::class, 'destroy']);
     });
 
+    Route::prefix('saldo-cuti')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'index']);
+        Route::get('/jabatan-options', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'jabatanOptions']);
+        Route::post('/', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'store']);
+        Route::get('/{id}', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'destroy']);
+    });
+
 });
 
 Route::fallback(function () {

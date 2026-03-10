@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/laravel2004/auth-service/internal/config"
-	route "github.com/laravel2004/auth-service/internal/router"
 	"log"
 	"os"
+
+	"github.com/laravel2004/auth-service/internal/config"
+	route "github.com/laravel2004/auth-service/internal/router"
 )
 
 func main() {
