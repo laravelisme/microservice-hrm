@@ -1,0 +1,14 @@
+# air configuration - simple setup for development
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # build command produces /tmp/app binary
+  cmd = "go build -o /tmp/app ./cmd"
+  bin = "/tmp/app"
+  include_ext = ["go"]
+  exclude_dir = ["vendor", "tmp", "storage", ".git"]
+  delay = 1000
+
+[log]
+  time = true
