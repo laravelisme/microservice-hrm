@@ -23,6 +23,11 @@ class DepartmentController extends Controller
 
     public function index(Request $request)
     {
+
+        if (!JwtHelper::hasRole($request, 'super-admin')) {
+            return response()->json(['message' => 'Role anda tidak diperbolehkan'], 403);
+        }
+
         try {
             $searchName      = trim((string) $request->query('searchName', ''));
             $searchIsHr      = (string) $request->query('searchIsHr', '');
@@ -70,6 +75,11 @@ class DepartmentController extends Controller
 
     public function companyOptions(Request $request)
     {
+
+        if (!JwtHelper::hasRole($request, 'super-admin')) {
+            return response()->json(['message' => 'Role anda tidak diperbolehkan'], 403);
+        }
+
         try {
             $term    = trim((string) $request->get('q', $request->get('term', '')));
             $page    = max(1, (int) $request->get('page', 1));
@@ -150,6 +160,11 @@ class DepartmentController extends Controller
 
     public function show($id)
     {
+
+        if (!JwtHelper::hasRole($request, 'super-admin')) {
+            return response()->json(['message' => 'Role anda tidak diperbolehkan'], 403);
+        }
+
         try {
             $department = $this->department->newQuery()
                 ->with('company:id,company_name')

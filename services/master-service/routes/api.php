@@ -30,6 +30,14 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
         Route::delete('/{id}', [\App\Http\Controllers\Department\DepartmentController::class, 'destroy']);
     });
 
+    Route::prefix('lokasi-kerja')->group(function () {
+        Route::get('/', [\App\Http\Controllers\LokasiKerja\LokasiKerjaController::class, 'index']);
+        Route::post('/', [\App\Http\Controllers\LokasiKerja\LokasiKerjaController::class, 'store']);
+        Route::get('/{id}', [\App\Http\Controllers\LokasiKerja\LokasiKerjaController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\LokasiKerja\LokasiKerjaController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\LokasiKerja\LokasiKerjaController::class, 'destroy']);
+    });
+
 });
 
 Route::fallback(function () {
