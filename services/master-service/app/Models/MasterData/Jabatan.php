@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Auth;
+namespace App\Models\MasterData;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserDevices extends Model
+class Jabatan extends Model
 {
     protected $guarded = ['id'];
 }

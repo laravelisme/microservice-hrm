@@ -21,13 +21,15 @@ class VerifyJwt
         }
 
         try {
+            $secret = config('jwt.secret');
+            $algo = config('jwt.algo', 'HS256');
 
             $decoded = JWT::decode(
                 $token,
-                new Key(env('JWT_SECRET'), 'HS256')
+                new Key($secret, $algo)
             );
 
-            $request->attributes->set('jwt_user', $decoded);
+            $request->attributes->set('jwt_payload', $decoded);
 
         } catch (ExpiredException $e) {
 

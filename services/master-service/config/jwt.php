@@ -10,22 +10,14 @@
  */
 
 return [
+    // Secret key for HS algorithms (set in .env as JWT_SECRET)
+    'secret' => env('JWT_SECRET', ''),
 
-    /*
-    |--------------------------------------------------------------------------
-    | JWT Authentication Secret
-    |--------------------------------------------------------------------------
-    |
-    | Don't forget to set this in your .env file, as it will be used to sign
-    | your tokens. A helper command is provided for this:
-    | `php artisan jwt:secret`
-    |
-    | Note: This will be used for Symmetric algorithms only (HMAC),
-    | since RSA and ECDSA use a private/public key combo (See below).
-    |
-    */
+    // Public key for RS algorithms (set in .env as JWT_PUBLIC_KEY)
+    'public_key' => env('JWT_PUBLIC_KEY', null),
 
-    'secret' => env('JWT_SECRET'),
+    // Algorithm used to sign the token. Example: HS256, RS256
+    'algo' => env('JWT_ALGO', 'HS256'),
 
     /*
     |--------------------------------------------------------------------------
@@ -45,20 +37,6 @@ return [
     */
 
     'keys' => [
-
-        /*
-        |--------------------------------------------------------------------------
-        | Public Key
-        |--------------------------------------------------------------------------
-        |
-        | A path or resource to your public key.
-        |
-        | E.g. 'file://path/to/public/key'
-        |
-        */
-
-        'public' => env('JWT_PUBLIC_KEY'),
-
         /*
         |--------------------------------------------------------------------------
         | Private Key
@@ -82,7 +60,6 @@ return [
         */
 
         'passphrase' => env('JWT_PASSPHRASE'),
-
     ],
 
     /*
@@ -121,17 +98,6 @@ return [
     */
 
     'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
-
-    /*
-    |--------------------------------------------------------------------------
-    | JWT hashing algorithm
-    |--------------------------------------------------------------------------
-    |
-    | Specify the hashing algorithm that will be used to sign the token.
-    |
-    */
-
-    'algo' => env('JWT_ALGO', Tymon\JWTAuth\Providers\JWT\Provider::ALGO_HS256),
 
     /*
     |--------------------------------------------------------------------------
@@ -262,7 +228,6 @@ return [
     */
 
     'providers' => [
-
         /*
         |--------------------------------------------------------------------------
         | JWT Provider
@@ -295,7 +260,5 @@ return [
         */
 
         'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
-
     ],
-
 ];

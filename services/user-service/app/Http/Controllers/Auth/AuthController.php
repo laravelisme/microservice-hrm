@@ -39,7 +39,17 @@ class AuthController extends Controller
                 return $this->errorResponse('Password Salah', 401);
             }
 
-            $token = JWTAuth::fromUser($user);
+            $role = $user->getRoleNames();
+            $rolesArray = $role instanceof \Illuminate\Support\Collection ? $role->toArray() : (array) $role;
+            $claims = [
+                'roles' => $rolesArray,
+                'uid' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'username' => $user->username,
+            ];
+
+            $token = JWTAuth::claims($claims)->fromUser($user);
 
             if (!$token) {
                 return $this->errorResponse('Gagal membuat token', 500);
@@ -57,28 +67,42 @@ class AuthController extends Controller
             }
 
             DB::beginTransaction();
+            try {
+                UserDevices::updateOrCreate([
+                    'user_id' => $user->id,
+                ],[
+                    'user_id' => $user->id,
+                    'device_token' => $data['data']['device_token'] ?? null,
+                    'unique_id' => $data['data']['unique_id'] ?? null,
+                    'device_info' => $data['data']['device_info'] ?? null,
+                    'bundle_id' => $data['data']['bundle_id'] ?? null,
+                    'os' => $data['data']['os'] ?? null,
+                    'app_name' => $data['data']['appName'] ?? null,
+                ]);
 
-            UserDevices::updateOrCreate([
-                'user_id' => $user->id,
-            ],[
-                'user_id' => $user->id,
-                'device_token' => $data['data']['device_token'] ?? null,
-                'unique_id' => $data['data']['unique_id'] ?? null,
-                'device_info' => $data['data']['device_info'] ?? null,
-                'bundle_id' => $data['data']['bundle_id'] ?? null,
-                'os' => $data['data']['os'] ?? null,
-                'app_name' => $data['data']['appName'] ?? null,
-            ]);
+                DB::commit();
 
-            $ttl = auth()->factory()->getTTL() * 60;
+                $ttl = auth()->factory()->getTTL() * 60;
 
-            return $this->successResponse([
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => $ttl,
-                'refresh_token' => $refreshToken,
-                'user' => $user->only(['id', 'name', 'email', 'username', 'last_login'])
-            ], 'Login berhasil', 200);
+                return $this->successResponse([
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => $ttl,
+                    'refresh_token' => $refreshToken,
+                    'user' => $user->only(['id', 'name', 'email', 'username', 'last_login'])
+                ], 'Login berhasil', 200);
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                Log::error('Failed to save user device after login for user id ' . $user->id . ': ' . $e->getMessage());
+                $ttl = auth()->factory()->getTTL() * 60;
+                return $this->successResponse([
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => $ttl,
+                    'refresh_token' => $refreshToken,
+                    'user' => $user->only(['id', 'name', 'email', 'username', 'last_login'])
+                ], 'Login berhasil (device save failed)', 200);
+            }
 
 
         } catch (\Throwable $e) {
@@ -137,7 +161,10 @@ class AuthController extends Controller
                 return $this->errorResponse('Refresh token tidak valid', 401);
             }
 
-            $token = JWTAuth::fromUser($user);
+            // include roles in new token as claims
+            $role = $user->getRoleNames();
+            $rolesArray = $role instanceof \Illuminate\Support\Collection ? $role->toArray() : (array) $role;
+            $token = JWTAuth::claims(['roles' => $rolesArray, 'uid' => $user->id])->fromUser($user);
 
             if (!$token) {
                 return $this->errorResponse('Gagal membuat token baru', 500);
@@ -146,10 +173,13 @@ class AuthController extends Controller
             $newRefresh = Str::random(80);
 
             try {
+                DB::beginTransaction();
                 $user->user_token = $token;
                 $user->refresh_token = $newRefresh;
                 $user->save();
+                DB::commit();
             } catch (\Throwable $e) {
+                DB::rollBack();
                 Log::warning('Failed to rotate refresh token for user id ' . $user->id . ': ' . $e->getMessage());
             }
 
