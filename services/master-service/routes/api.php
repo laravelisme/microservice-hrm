@@ -12,4 +12,12 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
         Route::put('/{id}', [\App\Http\Controllers\Jabatan\JabatanController::class, 'update']);
         Route::delete('/{id}', [\App\Http\Controllers\Jabatan\JabatanController::class, 'destroy']);
     });
+
+    Route::prefix('company')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Company\CompanyController::class, 'index']);
+        Route::post('/', [\App\Http\Controllers\Company\CompanyController::class, 'store']);
+        Route::get('/{id}', [\App\Http\Controllers\Company\CompanyController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\Company\CompanyController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\Company\CompanyController::class, 'destroy']);
+    });
 });

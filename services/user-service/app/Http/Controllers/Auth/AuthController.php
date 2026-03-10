@@ -161,7 +161,6 @@ class AuthController extends Controller
                 return $this->errorResponse('Refresh token tidak valid', 401);
             }
 
-            // include roles in new token as claims
             $role = $user->getRoleNames();
             $rolesArray = $role instanceof \Illuminate\Support\Collection ? $role->toArray() : (array) $role;
             $token = JWTAuth::claims(['roles' => $rolesArray, 'uid' => $user->id])->fromUser($user);
