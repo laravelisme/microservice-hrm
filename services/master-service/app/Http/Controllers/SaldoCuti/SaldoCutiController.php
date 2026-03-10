@@ -7,7 +7,6 @@ use App\Http\Requests\SaldoCuti\SaldoCutiStoreFormRequest;
 use App\Http\Requests\SaldoCuti\SaldoCutiUpdateFormRequest;
 use App\Models\MasterData\Jabatan;
 use App\Models\MasterData\SaldoCuti;
-use App\Models\MJabatan;
 use App\Services\JwtHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
