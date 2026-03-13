@@ -106,11 +106,11 @@ class JabatanController extends Controller
             return $this->successResponse($jabatan, 'Data Jabatan Berhasil Diambil', 200);
 
         } catch (\Throwable $e) {
-                if (app()->environment('local')) {
-                    return $this->errorResponse($e->getMessage(), 500);
-                }
-                Log::error('[JabatanController@show] ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-                return $this->errorResponse('Terjadi kesalahan di server', 500);
+            if (app()->environment('local')) {
+                return $this->errorResponse($e->getMessage(), 500);
+            }
+            Log::error('[JabatanController@show] ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return $this->errorResponse('Terjadi kesalahan di server', 500);
         }
     }
 

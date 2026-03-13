@@ -158,7 +158,7 @@ class DepartmentController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
 
         if (!JwtHelper::hasRole($request, 'super-admin')) {

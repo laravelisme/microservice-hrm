@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\RefreshRequestForm;
 use App\Models\Auth\User;
 use App\Models\Auth\UserDevices;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
@@ -59,7 +60,7 @@ class AuthController extends Controller
 
             try {
                 $user->last_login = now();
-                $user->user_token = $token;
+                $user->user_token = Str::random(80);
                 $user->refresh_token = $refreshToken;
                 $user->save();
             } catch (\Throwable $e) {
@@ -88,7 +89,7 @@ class AuthController extends Controller
                     'access_token' => $token,
                     'token_type' => 'bearer',
                     'expires_in' => $ttl,
-                    'refresh_token' => $refreshToken,
+                    'refresh_token' => $user->refresh_token,
                     'user' => $user->only(['id', 'name', 'email', 'username', 'last_login'])
                 ], 'Login berhasil', 200);
             } catch (\Throwable $e) {
@@ -127,7 +128,7 @@ class AuthController extends Controller
 
             $userDevice = UserDevices::where('user_id', $user->id)->first();
             if ($userDevice) {
-                $userDevice->device_token = null;
+//                $userDevice->device_token = null;
                 $userDevice->unique_id = null;
                 $userDevice->device_info = null;
                 $userDevice->bundle_id = null;
@@ -191,6 +192,27 @@ class AuthController extends Controller
                 'refresh_token' => $newRefresh,
                 'user' => $user->only(['id', 'name', 'email', 'username', 'last_login'])
             ], 'Refresh berhasil', 200);
+
+        } catch (\Throwable $e) {
+            Log::error($e->getMessage());
+            if (app()->environment('local')) {
+                return $this->errorResponse($e->getMessage(), 500);
+            }
+            return $this->errorResponse('Terjadi Kesalahan di Server', 500);
+        }
+    }
+
+    public function me(Request $request)
+    {
+        try {
+
+            $user = auth('api')->user();
+
+            if (!$user) {
+                return $this->errorResponse('User tidak ditemukan', 404);
+            }
+
+            return $this->successResponse($user->only(['id', 'name', 'email', 'username', 'last_login']), 'Data user berhasil diambil', 200);
 
         } catch (\Throwable $e) {
             Log::error($e->getMessage());

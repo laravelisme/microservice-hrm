@@ -16,9 +16,10 @@ Route::prefix('/v2')->group(function () {
     //Auth
     Route::prefix('/auth')->group(function () {
         Route::post('login', [\App\Http\Controllers\Auth\AuthController::class, 'login']);
-        Route::post('refresh', [\App\Http\Controllers\Auth\AuthController::class, 'refresh']);
+        Route::post('refresh-token', [\App\Http\Controllers\Auth\AuthController::class, 'refresh']);
 
         Route::prefix('/')->middleware('auth:api')->group(function () {
+            Route::get('me', [\App\Http\Controllers\Auth\AuthController::class, 'me']);
             Route::post('logout', [\App\Http\Controllers\Auth\AuthController::class, 'logout']);
         });
 
