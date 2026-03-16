@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saldo_cutis', function (Blueprint $table) {
+        Schema::create('jenis_sps', function (Blueprint $table) {
             $table->id();
-            $table->integer('jumlah');
-            $table->foreignId('jabatan_id')->constrained('jabatans')->cascadeOnDelete();
-            $table->string('created_by')->nullable();
-            $table->string('updated_by')->nullable();
+            $table->string('name')->nullable();
+            $table->string('kode')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saldo_cutis');
+        Schema::dropIfExists('jenis_sps');
     }
 };

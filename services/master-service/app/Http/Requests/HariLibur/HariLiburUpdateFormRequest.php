@@ -35,11 +35,15 @@ class HariLiburUpdateFormRequest extends FormRequest
             'is_repeat' => ['required', 'boolean'],
 
             'company_ids' => [
-                Rule::requiredIf(fn () => $this->boolean('is_umum') === false),
+                'exclude_if:is_umum,true',
+                'required',
                 'array',
                 'min:1',
             ],
-            'company_ids.*' => ['integer', 'exists:companies,id'],
+            'company_ids.*' => [
+                'integer',
+                'exists:companies,id',
+            ],
         ];
     }
 

@@ -41,10 +41,20 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
     Route::prefix('saldo-cuti')->group(function () {
         Route::get('/', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'index']);
         Route::get('/jabatan-options', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'jabatanOptions']);
+        Route::get('/jenis-cuti-options', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'jenisCutiOptions']);
         Route::post('/', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'store']);
         Route::get('/{id}', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'show']);
         Route::put('/{id}', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'update']);
         Route::delete('/{id}', [\App\Http\Controllers\SaldoCuti\SaldoCutiController::class, 'destroy']);
+    });
+
+    Route::prefix('hari-libur')->group(function () {
+        Route::get('/', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'index']);
+        Route::get('/company-options', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'companyOptions']);
+        Route::post('/', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'store']);
+        Route::get('/{id}', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'destroy']);
     });
 
 });

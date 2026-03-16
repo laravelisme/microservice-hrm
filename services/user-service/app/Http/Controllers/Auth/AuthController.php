@@ -174,7 +174,7 @@ class AuthController extends Controller
 
             try {
                 DB::beginTransaction();
-                $user->user_token = $token;
+//                $user->user_token = $token;
                 $user->refresh_token = $newRefresh;
                 $user->save();
                 DB::commit();
@@ -189,7 +189,7 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => $ttl,
-                'refresh_token' => $newRefresh,
+                'refresh_token' => $user->refresh_token,
                 'user' => $user->only(['id', 'name', 'email', 'username', 'last_login'])
             ], 'Refresh berhasil', 200);
 

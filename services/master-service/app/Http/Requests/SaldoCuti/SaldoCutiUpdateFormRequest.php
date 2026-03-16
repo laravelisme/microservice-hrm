@@ -23,7 +23,7 @@ class SaldoCutiUpdateFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis' => 'required|string',
+            'jenis' => 'required|integer|exists:jenis_cutis,id',
             'jumlah' => 'required|integer',
             'jabatan_id' => 'required|integer|exists:jabatans,id',
         ];
