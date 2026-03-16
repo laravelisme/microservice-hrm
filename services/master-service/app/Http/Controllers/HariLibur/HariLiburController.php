@@ -60,13 +60,36 @@ class HariLiburController extends Controller
             }
 
             $hariLiburs = $query->orderByDesc('id')->paginate($perPage)->withQueryString();
+
+            $pageItems = $hariLiburs->getCollection()->all();
+            $hariIds = array_map(fn($h) => $h->id, $pageItems);
+
+            $companyMap = [];
+            if (!empty($hariIds)) {
+                $rows = HariLiburCompany::query()
+                    ->whereIn('hari_libur_id', $hariIds)
+                    ->get(['hari_libur_id', 'company_id']);
+
+                foreach ($rows as $r) {
+                    $companyMap[$r->hari_libur_id][] = $r->company_id;
+                }
+            }
+
+            $mapped = array_map(function ($h) use ($companyMap) {
+                $hArr = $h->toArray();
+                $hArr['company_ids'] = $companyMap[$h->id] ?? [];
+                return $hArr;
+            }, $pageItems);
+
+            $hariLiburs->setCollection(collect($mapped));
+
             return $this->successResponse($hariLiburs, 'Data hari libur berhasil diambil', 200);
 
         } catch (\Throwable $e) {
             if (app()->environment('local')) {
                 return $this->errorResponse($e->getMessage(), 500);
             }
-            Log::error('[JabatanController@show] ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('[JabatanController@index] ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return $this->errorResponse('Terjadi kesalahan di server', 500);
         }
     }
@@ -120,7 +143,7 @@ class HariLiburController extends Controller
 
             $hariLibur = null;
 
-            DB::transaction(function () use ($data, &$hariLibur) {
+            DB::transaction(function () use ($data, & $hariLibur) {
 
                 $hariLibur = $this->hariLibur->create([
                     'hari_libur'        => $data['hari_libur'],
