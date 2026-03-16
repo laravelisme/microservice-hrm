@@ -57,6 +57,14 @@ Route::prefix('/v2/master-data')->middleware([\App\Http\Middleware\VerifyJwt::cl
         Route::delete('/{id}', [\App\Http\Controllers\HariLibur\HariLiburController::class, 'destroy']);
     });
 
+    Route::prefix('grup-jam-kerja')->group(function () {
+        Route::get('/', [\App\Http\Controllers\GrupJamKerja\GrupJamKerjaController::class, 'index']);
+        Route::post('/', [\App\Http\Controllers\GrupJamKerja\GrupJamKerjaController::class, 'store']);
+        Route::get('/{id}', [\App\Http\Controllers\GrupJamKerja\GrupJamKerjaController::class, 'show']);
+        Route::put('/{id}', [\App\Http\Controllers\GrupJamKerja\GrupJamKerjaController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\GrupJamKerja\GrupJamKerjaController::class, 'destroy']);
+    });
+
 });
 
 Route::fallback(function () {
