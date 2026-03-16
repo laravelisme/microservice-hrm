@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('grup_jam_kerjas', function (Blueprint $table) {
-            $table->id();
             // Exact schema from SQL - 57 fields
             $table->string('start', 5)->nullable();
             $table->string('end', 5)->nullable();
